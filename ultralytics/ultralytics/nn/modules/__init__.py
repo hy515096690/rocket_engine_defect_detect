@@ -93,6 +93,7 @@ from .head import (
     YOLOESegment26,
     v10Detect,
 )
+from .mambaNeXt_yolo import AVG, MambaNeXtBlock, RepHMSMamba, SimpleStem, VisionClueMerge
 from .transformer import (
     AIFI,
     MLP,
@@ -108,6 +109,7 @@ from .transformer import (
 
 __all__ = (
     "AIFI",
+    "AVG",
     "C1",
     "C2",
     "C2PSA",
@@ -161,6 +163,8 @@ __all__ = (
     "Index",
     "LRPCHead",
     "LayerNorm2d",
+    "MambaNeXtBlock",
+    "SimpleStem",
     "LightConv",
     "MLPBlock",
     "MSDeformAttn",
@@ -171,6 +175,7 @@ __all__ = (
     "RTDETRDecoder",
     "RepC3",
     "RepConv",
+    "RepHMSMamba",
     "RepNCSPELAN4",
     "RepVGGDW",
     "ResNetLayer",
@@ -186,5 +191,6 @@ __all__ = (
     "YOLOEDetect",
     "YOLOESegment",
     "YOLOESegment26",
+    "VisionClueMerge",
     "v10Detect",
 )

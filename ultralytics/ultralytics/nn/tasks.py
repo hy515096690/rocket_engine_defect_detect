@@ -12,6 +12,7 @@ import torch.nn as nn
 
 from ultralytics.nn.autobackend import check_class_names
 from ultralytics.nn.modules import (
+    AVG,
     AIFI,
     C1,
     C2,
@@ -55,10 +56,12 @@ from ultralytics.nn.modules import (
     ImagePoolingAttn,
     Index,
     LRPCHead,
+    MambaNeXtBlock,
     Pose,
     Pose26,
     RepC3,
     RepConv,
+    RepHMSMamba,
     RepNCSPELAN4,
     RepVGGDW,
     ResNetLayer,
@@ -66,11 +69,13 @@ from ultralytics.nn.modules import (
     SCDown,
     Segment,
     Segment26,
+    SimpleStem,
     TorchVision,
     WorldDetect,
     YOLOEDetect,
     YOLOESegment,
     YOLOESegment26,
+    VisionClueMerge,
     v10Detect,
 )
 from ultralytics.utils import DEFAULT_CFG_DICT, LOGGER, SETTINGS, WINDOWS, YAML, colorstr, emojis
@@ -1710,6 +1715,24 @@ def parse_model(d, ch, verbose=True):
             c2 = args[0]
             c1 = ch[f]
             args = [c1, c2, *args[1:]]
+        elif m is SimpleStem:
+            c1, c2 = ch[f], make_divisible(min(args[0], max_channels) * width, 8)
+            args = [c1, c2, *args[1:]]
+        elif m is VisionClueMerge:
+            c1, c2 = ch[f], make_divisible(min(args[0], max_channels) * width, 8)
+            if c2 % 4:
+                c2 = make_divisible(((c2 + 3) // 4) * 4, 8)
+            args = [c1, c2]
+        elif m is AVG:
+            c2 = ch[f]
+            if not args:
+                args = [2]
+        elif m is RepHMSMamba:
+            c1, c2 = ch[f], make_divisible(min(args[0], max_channels) * width, 8)
+            args = [c1, c2, *args[1:]]
+        elif m is MambaNeXtBlock:
+            c2 = ch[f]
+            args = [ch[f], *args]
         elif m is CBFuse:
             c2 = ch[f[-1]]
         elif m in frozenset({TorchVision, Index}):
